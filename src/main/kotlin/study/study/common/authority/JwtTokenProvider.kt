@@ -1,5 +1,13 @@
 package study.study.common.authority
 
+import io.jsonwebtoken.Claims
+import io.jsonwebtoken.ExpiredJwtException
+import io.jsonwebtoken.Jwts
+import io.jsonwebtoken.MalformedJwtException
+import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.UnsupportedJwtException
+import io.jsonwebtoken.io.Decoders
+import io.jsonwebtoken.security.Keys
 import study.study.common.dto.CustomUser
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -35,12 +43,13 @@ class JwtTokenProvider {
         // Access Token
         val accessToken = Jwts
             .builder()
-            .setSubject(authentication.name)
+            .subject(authentication.name)
             .claim("auth", authorities)
             .claim("userId", (authentication.principal as CustomUser).userId)
-            .setIssuedAt(now)
-            .setExpiration(accessExpiration)
-            .signWith(key, SignatureAlgorithm.HS256)
+            .issuedAt(now)
+            .expiration(accessExpiration)
+            .signWith(key)
+            //.signWith(key, SignatureAlgorithm.HS256)
             .compact()
 
         return TokenInfo("Bearer", accessToken)
@@ -87,9 +96,9 @@ class JwtTokenProvider {
     }
 
     private fun getClaims(token: String): Claims =
-        Jwts.parserBuilder()
-            .setSigningKey(key)
+        Jwts.parser()
+            .verifyWith(key)
             .build()
-            .parseClaimsJws(token)
-            .body
+            .parseSignedClaims(token)
+            .payload
 }
