@@ -23,7 +23,9 @@ class SecurityConfig(
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .authorizeHttpRequests {
                 it.requestMatchers("/api/member/signup", "/api/member/login").anonymous()
+                    .requestMatchers("/api/member/info").authenticated()
                     .requestMatchers("/api/member/**").hasRole("MEMBER")
+                    .requestMatchers("/api/post/**").hasRole("MEMBER")
                     .anyRequest().permitAll()
             }
             .addFilterBefore(

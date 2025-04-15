@@ -69,7 +69,7 @@ class JwtTokenProvider {
             .split(",")
             .map { SimpleGrantedAuthority(it) }
 
-        val principal: UserDetails = CustomUser(userId.toString().toLong(), claims.subject, "", authorities)
+        val principal: UserDetails = CustomUser(userId.toString().toLong(), claims.subject, claims.subject, "", authorities)
 
         return UsernamePasswordAuthenticationToken(principal, "", authorities)
     }

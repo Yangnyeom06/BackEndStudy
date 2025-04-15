@@ -2,17 +2,17 @@ package study.study.member.dto
 
 //import study.study.common.status.Gender
 import study.study.common.status.DormitoryType
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import study.study.common.annotation.ValidEnum
+import study.study.member.entity.Member
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
-import study.study.common.annotation.ValidEnum
-import study.study.member.entitiy.Member
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 data class MemberDtoRequest(
-    val id: Long?,
+    var id: Long?,
 
     @field:NotBlank
     @JsonProperty("loginId")
@@ -85,3 +85,26 @@ data class MemberDtoRequest(
     fun toEntity(): Member =
         Member(id, loginId, password, name, dormitory, email)
 }
+
+data class LoginDto(
+    @field:NotBlank
+    @JsonProperty("loginId")
+    private val _loginId: String?,
+
+    @field:NotBlank
+    @JsonProperty("password")
+    private val _password: String?,
+) {
+    val loginId: String
+        get() = _loginId!!
+    val password: String
+        get() = _password!!
+}
+
+data class MemberDtoResponse(
+    val id: Long,
+    val loginId: String,
+    val name: String,
+    val dormitory: String,
+    val email: String,
+)

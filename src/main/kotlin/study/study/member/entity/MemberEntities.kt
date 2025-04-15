@@ -1,8 +1,11 @@
-package study.study.member.entitiy
+package study.study.member.entity
 
 //import study.study.common.status.Gender
 import study.study.common.status.DormitoryType
 import jakarta.persistence.*
+import study.study.common.status.ROLE
+import study.study.member.dto.MemberDtoResponse
+import java.time.format.DateTimeFormatter
 import java.time.LocalDate
 
 @Entity
@@ -39,4 +42,28 @@ class Member (
 
     @Column(nullable = false, length = 30)
     val email: String,
+) {
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    val memberRole: List<MemberRole>? =null
+
+    private fun LocalDate.formatDate(): String =
+        this.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
+
+    fun toDto(): MemberDtoResponse =
+        MemberDtoResponse(id!!, loginId, name, dormitory.desc, email)
+}
+
+@Entity
+class MemberRole(
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    var id: Long? = null,
+
+    @Column(nullable = false, length = 30)
+    @Enumerated(EnumType.STRING)
+    val role: ROLE,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(foreignKey = ForeignKey(name = "fk_member_role_member_id"))
+    val member: Member
 )

@@ -9,7 +9,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/study_db?serverTimezone=Asia/Seoul
     username: "root"
     password: "password0000"
   jpa:
@@ -31,4 +31,4 @@ logging:
         SQL: debug
         type.descriptor.sql: trace
 jwt:
-  secret: asdfsaf123r2rfzdv
+  secret: asdfasdfASDFASDFasdfQWERqwerzxcvasdfasdfasdfasdfasdfasdf

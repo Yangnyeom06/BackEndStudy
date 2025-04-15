@@ -5,7 +5,8 @@ import org.springframework.security.core.userdetails.User
 
 class CustomUser(
     val userId: Long,
-    userName: String,
+    val userName: String,
+    userLoginId: String,
     password: String,
     authorities: Collection<GrantedAuthority>
-) : User(userName, password, authorities)
+) : User(userLoginId, password, authorities)
