@@ -15,10 +15,10 @@ import study.study.post.repository.PostRepository
 class PostService(
     private val postRepository: PostRepository
 ) {
-    fun createPost(authorId: Long, request: PostRequest, memberDtoRequest: MemberDtoRequest): PostResponse {
-        val post = PostEntities(title = request.title, content = request.content, authorId = authorId, authorName = memberDtoRequest.name)
+    fun createPost(autherId: Long, authorLoginId: String, authorName: String, request: PostRequest): PostResponse {
+        val post = PostEntities(title = request.title, content = request.content, authorId = autherId, autherLoginId = authorLoginId, authorName = authorName)
         val saved = postRepository.save(post)
-        return toResponse(saved)
+        return PostResponse.from(saved)
     }
 
     fun updatePost(postId: Long, authorId: Long, request: PostRequest): PostResponse {
@@ -27,7 +27,7 @@ class PostService(
         if (post.authorId != authorId) throw IllegalAccessException("작성자만 수정 가능")
 
         post.update(request.title, request.content)
-        return toResponse(post)
+        return PostResponse.from(post)
     }
 
     fun deletePost(postId: Long, authorId: Long) {
@@ -38,13 +38,19 @@ class PostService(
         postRepository.delete(post)
     }
 
-    private fun toResponse(post: PostEntities): PostResponse = PostResponse(
-        id = post.id,
-        title = post.title,
-        content = post.content,
-        authorId = post.authorId,
-        authorName = post.authorName,
-        createdAt = post.createdAt.toString(),
-        updatedAt = post.modifiedAt.toString()
-    )
+    fun getAllPosts(): List<PostResponse> {
+        return postRepository.findAll()
+            .map { PostResponse.from(it) }
+    }
+
+    fun getPost(postId: Long?, postTitle: String?): PostResponse {
+        val post = when {
+            postId != null -> postRepository.findById(postId).orElseThrow { IllegalArgumentException("게시글 없음") }
+            postTitle != null -> postRepository.findByTitle(postTitle)
+                ?: throw IllegalArgumentException("해당 제목의 게시글 없음")
+
+            else -> throw IllegalArgumentException("검색 조건이 없습니다.")
+        }
+        return PostResponse.from(post)
+    }
 }
