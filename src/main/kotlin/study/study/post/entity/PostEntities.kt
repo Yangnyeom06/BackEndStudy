@@ -1,6 +1,5 @@
 package study.study.post.entity
 
-import Timestamped
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedBy
 import org.springframework.data.annotation.LastModifiedBy
@@ -24,11 +23,21 @@ class PostEntities(
     var authorId: Long,
 
     @Column(nullable = false)
+    var autherLoginId: String,
+
+    @Column(nullable = false)
     var authorName: String,
-) : Timestamped() {
+
+    @Column(nullable = false)
+    val createdAt: LocalDateTime = LocalDateTime.now(),
+
+    @Column(nullable = false)
+    var modifiedAt: LocalDateTime = LocalDateTime.now()
+) {
 
     fun update(title: String, content: String) {
         this.title = title
         this.content = content
+        this.modifiedAt = LocalDateTime.now()
     }
 }
