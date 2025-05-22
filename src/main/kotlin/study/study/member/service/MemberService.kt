@@ -29,11 +29,8 @@ class MemberService(
      * 회원가입
      */
     fun signUp(memberDtoRequest: MemberDtoRequest): String {
-        // ID 중복 검사
         var member: Member? = memberRepository.findByLoginId(memberDtoRequest.loginId)
-        if (member != null) {
-            throw InvalidInputException("loginId", "이미 등록된 ID 입니다.")
-        }
+        if (member != null) { throw InvalidInputException("loginId", "이미 등록된 ID 입니다.") }
 
         member = memberDtoRequest.toEntity()
         memberRepository.save(member)
@@ -45,7 +42,7 @@ class MemberService(
     }
 
     /**
-     * 로그인 -> 토큰 발행
+     * 로그인
      */
     fun login(loginDto: LoginDto): TokenInfo {
         val authenticationToken = UsernamePasswordAuthenticationToken(loginDto.loginId, loginDto.password)
@@ -69,5 +66,14 @@ class MemberService(
         val member: Member = memberDtoRequest.toEntity()
         memberRepository.save(member)
         return "수정이 완료되었습니다."
+    }
+
+    /**
+     * 같은 기숙사 정보 조회
+     */
+    fun dormitoryInfo(id: Long): List<MemberDtoResponse> {
+        val dormitoryType = memberRepository.findByIdOrNull(id)!!.dormitoryType
+        val sameDormitoryInfo = memberRepository.findAllByDormitoryType(dormitoryType)
+        return sameDormitoryInfo.map { it.toDto() }
     }
 }

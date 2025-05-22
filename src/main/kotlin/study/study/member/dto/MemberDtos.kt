@@ -41,8 +41,8 @@ data class MemberDtoRequest(
 
     @field:NotBlank
     @field:ValidEnum(enumClass = DormitoryType::class, message = "기숙사를 선택해주세요.")
-    @JsonProperty("dormitory")
-    private val _dormitory: String?,
+    @JsonProperty("dormitoryType")
+    private val _dormitoryType: String?,
 
     /*
     @JsonProperty("birthDate")
@@ -66,8 +66,8 @@ data class MemberDtoRequest(
         get() = _password!!
     val name: String
         get() = _name!!
-    val dormitory: DormitoryType
-        get() = DormitoryType.valueOf(_dormitory!!)
+    val dormitoryType: DormitoryType
+        get() = DormitoryType.valueOf(_dormitoryType!!)
 
     /*
     val birthDate: LocalDate
@@ -83,7 +83,7 @@ data class MemberDtoRequest(
         LocalDate.parse(this, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
 
     fun toEntity(): Member =
-        Member(id, loginId, password, name, dormitory, email)
+        Member(id, loginId, password, name, dormitoryType, email)
 }
 
 data class LoginDto(
@@ -105,6 +105,6 @@ data class MemberDtoResponse(
     val id: Long,
     val loginId: String,
     val name: String,
-    val dormitory: String,
+    val dormitoryType: String,
     val email: String,
 )
