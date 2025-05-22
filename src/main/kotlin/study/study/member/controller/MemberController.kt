@@ -61,4 +61,14 @@ class MemberController(
         val resultMsg: String = memberService.saveMyInfo(memberDtoRequest)
         return BaseResponse(message = resultMsg)
     }
+
+    /**
+     * 같은 기숙사 정보 보기
+     */
+    @GetMapping("/dormitoryInfo")
+    fun dormitoryInfo(): BaseResponse<List<MemberDtoResponse>> {
+        val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
+        val sameDormitoryInfo = memberService.dormitoryInfo(userId)
+        return BaseResponse(data = sameDormitoryInfo)
+    }
 }

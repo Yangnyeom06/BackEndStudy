@@ -15,12 +15,18 @@ import study.study.post.repository.PostRepository
 class PostService(
     private val postRepository: PostRepository
 ) {
+    /**
+     * 게시글 작성
+     */
     fun createPost(autherId: Long, authorLoginId: String, authorName: String, request: PostRequest): PostResponse {
         val post = PostEntities(title = request.title, content = request.content, authorId = autherId, autherLoginId = authorLoginId, authorName = authorName)
         val saved = postRepository.save(post)
         return PostResponse.from(saved)
     }
 
+    /**
+     * 게시글 수정
+     */
     fun updatePost(postId: Long, authorId: Long, request: PostRequest): PostResponse {
         val post = postRepository.findById(postId).orElseThrow { IllegalArgumentException("게시글 없음") }
 
@@ -30,6 +36,9 @@ class PostService(
         return PostResponse.from(post)
     }
 
+    /**
+     * 게시글 삭제
+     */
     fun deletePost(postId: Long, authorId: Long) {
         val post = postRepository.findById(postId).orElseThrow { IllegalArgumentException("게시글 없음") }
 
@@ -38,19 +47,18 @@ class PostService(
         postRepository.delete(post)
     }
 
-    fun getAllPosts(): List<PostResponse> {
+    /**
+     * 모든 게시글 조회
+     */
+    fun getAllPosts(): List<PostEntities> {
         return postRepository.findAll()
-            .map { PostResponse.from(it) }
     }
 
-    fun getPost(postId: Long?, postTitle: String?): PostResponse {
-        val post = when {
-            postId != null -> postRepository.findById(postId).orElseThrow { IllegalArgumentException("게시글 없음") }
-            postTitle != null -> postRepository.findByTitle(postTitle)
-                ?: throw IllegalArgumentException("해당 제목의 게시글 없음")
-
-            else -> throw IllegalArgumentException("검색 조건이 없습니다.")
-        }
-        return PostResponse.from(post)
+    /**
+     * 게시글 조회
+     */
+    fun getPost(postId: Long): PostEntities {
+        val post = postRepository.findById(postId).orElseThrow { IllegalArgumentException("게시글 없음") }
+        return post
     }
 }

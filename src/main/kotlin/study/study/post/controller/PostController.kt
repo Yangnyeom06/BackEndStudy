@@ -17,6 +17,7 @@ import study.study.member.dto.MemberDtoRequest
 import study.study.member.service.MemberService
 import study.study.post.dto.PostRequest
 import study.study.post.dto.PostResponse
+import study.study.post.entity.PostEntities
 import study.study.post.service.PostService
 import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Private
 
@@ -39,10 +40,7 @@ class PostController(
     }
 
     @PutMapping("/{postId}")
-    fun updatePost(
-        @PathVariable postId: Long,
-        @RequestBody request: PostRequest
-    ): BaseResponse<Unit> {
+    fun updatePost(@PathVariable postId: Long, @RequestBody request: PostRequest): BaseResponse<Unit> {
         val userId = (SecurityContextHolder.getContext().authentication.principal as CustomUser).userId
         postService.updatePost(userId, postId, request)
         return BaseResponse(message = "게시글이 수정되었습니다.")
@@ -56,17 +54,14 @@ class PostController(
     }
 
     @GetMapping
-    fun getAllPosts(): BaseResponse<List<PostResponse>> {
+    fun getAllPosts(): BaseResponse<List<PostEntities>> {
         val posts = postService.getAllPosts()
         return BaseResponse(data = posts, message = "전체 게시글 조회 성공")
     }
 
-    @GetMapping("/search")
-    fun getPost(
-        @RequestParam(required = false) postId: Long?,
-        @RequestParam(required = false) postTitle: String?
-    ): BaseResponse<PostResponse> {
-        val post = postService.getPost(postId, postTitle)
+    @GetMapping("/get")
+    fun getPost(@RequestParam(required = false) postId: Long): BaseResponse<PostEntities> {
+        val post = postService.getPost(postId)
         return BaseResponse(data = post, message = "게시글 검색 성공")
     }
 }

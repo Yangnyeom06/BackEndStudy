@@ -28,7 +28,7 @@ class Member (
 
     @Column(nullable = false, length = 10)
     @Enumerated(EnumType.STRING)
-    val dormitory: DormitoryType,
+    val dormitoryType: DormitoryType,
 
     /*
       @Column(nullable = false)
@@ -50,7 +50,7 @@ class Member (
         this.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
 
     fun toDto(): MemberDtoResponse =
-        MemberDtoResponse(id!!, loginId, name, dormitory.desc, email)
+        MemberDtoResponse(id!!, loginId, name, dormitoryType.desc, email)
 }
 
 @Entity
